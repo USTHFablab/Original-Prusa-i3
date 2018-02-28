@@ -5,6 +5,34 @@
 // http://www.reprap.org/wiki/Prusa_Mendel
 // http://prusamendel.org
 
+// Hobbed pulley size (default = 6/8)
+hobdia=7; outerdia=9; xm=(hobdia-6);
+hobbType = (hobdia == 7) ? "MK8" : "";
+
+// 8mm sensor
+//pindaDia = 8;
+//soff = 0;
+//cabinc = 0;
+
+// 12 mm sensor
+pindaDia = 12;
+soff = 3.5;
+cabinc = 0;
+
+// 18mm sensor
+//pindaDia = 18;
+//soff = 4;
+//cabinc = 0.5;
+
+sensr = (pindaDia-8)/2;
+probe = str(pindaDia, "mm");
+
+// thickness of pinda 
+
+// Uncomment for testing
+//extruder_body();
+//extruder_mount_holes();
+//extruder_cover();
 
 module extruder_body(){
 union(){
@@ -17,7 +45,7 @@ difference(){
             translate([-15.5,40,0])cube([21.5,5,14]);
             translate([9,41,-1]) rotate([0,0,45]) translate([0,-5,-0.1]) cube([10,12,20]);    
         }
-        translate([-7.5,15,0])cube([8,10.5,3]); // P.I.N.D.A. and Fan cable tray guide ; 
+        translate([-7.5-cabinc,15,0])cube([8+cabinc,10.5,3-1]); // P.I.N.D.A. and Fan cable tray guide ; 
         
         //fan nice look
         translate([35,0,0]) cube([10,12,15]);
@@ -38,21 +66,31 @@ difference(){
      }
      
      // P.I.N.D.A. and Fan cable tray cut
-     translate([-4.5,20,-1]) cube([4.499,3.5+5,5]);
+     translate([-4.5-cabinc,20,-1]) cube([4.499+cabinc,3.5+5,5]);
      // P.I.N.D.A. and Fan cable tray edge cut
-     translate([-10,22,-1])rotate([0,0,45]) cube([10,5,10]);
-     translate([-13,16.5,-1])rotate([0,0,-45]) cube([10,5,10]);
+     translate([-10-cabinc,22,-1])rotate([0,0,45]) cube([10,5,10]);
+     translate([-13-cabinc,16.5,-1])rotate([0,0,-45]) cube([10,5,10]);
     
      extruder_nozzle_cut();  
      // larger groove for easy entry
-    translate([35/2,0,15]) rotate([-90,0,0]) cylinder(r=7.13, h=20, $fn=120);
+    translate([35/2-xm,0,15]) rotate([-90,0,0]) cylinder(r=7.13, h=20, $fn=120);
      
 // Extruder cables path
     translate([33+4,10,-1]) cylinder(r=2, h=17,$fn=30);
     translate([33+4,12,9]) cube([4,4,20], center=true);  
      
     extruder_nozzle_cooling();
-
+     
+     // Marking    
+    translate([9,20,0.5]) rotate([180,0,0]) linear_extrude(height = 0.51) 
+    {
+        text(hobbType,font = "helvetica:style=Bold", size=6, center=true);
+        if (pindaDia > 8)
+        {
+            translate([-4,-10,0])
+            text(probe,font = "helvetica:style=Bold", size=6, center=true);
+        }
+    }
 }
 
 // Cooling grill
@@ -60,9 +98,9 @@ difference(){
     union(){
     // Fins up
         //translate([0,37,0]) rotate([0,0,25]) cube([6,1.4,15]);
-        translate([0,32,0]) rotate([0,0,25]) cube([6,1.4,15]);
+        translate([0,32,0]) rotate([0,0,25]) cube([6-xm,1.4,15]);
         //translate([0,27,0]) rotate([0,0,25]) cube([6,1.4,15]);
-        translate([0,22,0]) rotate([0,0,25]) cube([6,1.4,15]);
+        translate([0,22,0]) rotate([0,0,25]) cube([6-xm,1.4,15]);
         //translate([0,17,0]) rotate([0,0,25]) cube([6,1.4,15]);
         
         // Structural support
@@ -77,12 +115,14 @@ difference(){
 
 mirror([1,0,0]){
 //  Filament visualisation
-    %translate([-35/2,-50,15])rotate([-90,0,0])cylinder(r=1.75/2, h=100, $fn=20);
+    %translate([-35/2+xm,-50,15])rotate([-90,0,0])cylinder(r=1.75/2, h=100, $fn=20);
 
 // Motor visualisation
     translate([-42,-42,-1]) %cube([42,42,1]);
     translate([-21,-21,0])%cylinder(r=2.5, h=20, $fn=30);
-    translate([-21,-21,8])%cylinder(r=4, h=13, $fn=30);
+    translate([-21,-21,8])%cylinder(r=hobdia/2, h=13, $fn=30);
+    translate([-21,-21,8])%cylinder(r=outerdia/2, h=6, $fn=30);
+    translate([-21,-21,16])%cylinder(r=outerdia/2, h=6, $fn=30);
 
 // MOTOR
 difference(){
@@ -92,41 +132,41 @@ difference(){
     translate([-42,-42,0]) cube([42,42,30]);
     //main cut
     translate([-21,-19.5-10-3,-1]) cube([42,23,32]);
-    translate([-15,-49.5,-1]) cube([42,23,32]);
+    translate([-15+xm,-49.5,-1]) cube([42,23,32]);
     translate([-51,-33,-1]) rotate([0,65,0]) cube([10,25,10]);
     translate([-35/2+3+1.8+0.5,-41,2+3+2.5])cube([42,42,32]);
     //base round cutout
     translate([-21,-21,-2]) cylinder(r=11.5, h=33, $fn=200);
     
     //filament hole
-    translate([-35/2,-42,15])rotate([-90,0,0])cylinder(r=2.5/2, h=20, $fn=20);
-    translate([-35/2,-42,15])rotate([-90,0,0])cylinder(r2=2.2/2,r1=3.6/2, h=1.5, $fn=20);
+    translate([-35/2+xm,-42,15])rotate([-90,0,0])cylinder(r=2.5/2, h=20, $fn=20);
+    translate([-35/2+xm,-42,15])rotate([-90,0,0])cylinder(r2=2.2/2,r1=3.6/2, h=1.5, $fn=20);
 }
 
 //filament guide
-translate([-35/2-3,-19,15-4])cube([6,10,6.5]);
+translate([-35/2+xm-3,-19,15-4])cube([6,10,6.5]);
 difference(){
 union(){
-translate([-35/2-3,-8.4+2+1.2,0.4]) rotate([45,0,0]) cube([6,15,15]);
-translate([-35/2-3,-8.4+2+1.2,0.4+6.5]) rotate([45,0,0]) cube([6,15,15]);    
+translate([-35/2+xm-3,-8.4+2+1.2,0.4]) rotate([45,0,0]) cube([6,15,15]);
+translate([-35/2+xm-3,-8.4+2+1.2,0.4+6.5]) rotate([45,0,0]) cube([6,15,15]);    
 }
-translate([-35/2-4,-1,2]) cube([8,15,25]);
+translate([-35/2+xm-4,-1,2]) cube([8,15,25]);
     
 }
 }
     // Filament ptfe guide cutout
 
         // PTFE secure ring slot
-        translate([-35/2,-3.99,15])rotate([-90,0,0]) cylinder(r=7.5/2, h=5, $fn=50);    // Bottom hole
-        translate([-35/2,-3.99,21])rotate([-90,0,0]) cylinder(r=7.5/2, h=5, $fn=50);    // Top hole     
-        translate([-35/2 - 7.5/2,-3.99,21])rotate([-90,0,0])cube([7.5,6,8]);            // Slot cut
+        translate([-35/2+xm,-3.99,15])rotate([-90,0,0]) cylinder(r=7.5/2, h=5, $fn=50);    // Bottom hole
+        translate([-35/2+xm,-3.99,21])rotate([-90,0,0]) cylinder(r=7.5/2, h=5, $fn=50);    // Top hole     
+        translate([-35/2+xm - 7.5/2,-3.99,21])rotate([-90,0,0])cube([7.5,6,8]);            // Slot cut
     
         // PTFE tube slot
-        translate([-35/2,-23,15])rotate([-90,0,0]) cylinder(r=4.3/2, h=25, $fn=50);     // Main hole
-        translate([-35/2,-9,15])rotate([-60,0,0]) rotate([0,0,10])cylinder(r=4.3/2, h=25, $fn=50); // Top hole
+        translate([-35/2+xm,-23,15])rotate([-90,0,0]) cylinder(r=4.3/2, h=25, $fn=50);     // Main hole
+        translate([-35/2+xm,-9,15])rotate([-60,0,0]) rotate([0,0,10])cylinder(r=4.3/2, h=25, $fn=50); // Top hole
         // Slot cut
         difference(){
-        translate([-35/2,-8,14])rotate([-60,0,0]) rotate([0,0,30])cylinder(r=4.85/2, h=25, $fn=6);
+        translate([-35/2+xm,-8,14])rotate([-60,0,0]) rotate([0,0,30])cylinder(r=4.85/2, h=25, $fn=6);
         translate([-22,-20,5])cube([10,50,10]);
         }
         
@@ -134,8 +174,11 @@ translate([-35/2-4,-1,2]) cube([8,15,25]);
            translate([-21,-21,8])cylinder(r=4, h=13, $fn=80);
        // idler bearing cutout
            translate([-21+13,-21,8])cylinder(r=8.5, h=13, $fn=80);
+        
+       // hobbed pulley cutout
+            translate([-21,-21,0])cylinder(r=hobdia/2+1, h=20, $fn=30);
 
-             translate([-21,-27,8])cube([10,10,13]); // Trim
+           translate([-21,-27,8])cube([10,10,13]); // Trim
  
        
        // filament clean hole
@@ -149,11 +192,11 @@ translate([-35/2-4,-1,2]) cube([8,15,25]);
            
            
            // idler nut traps Bottom
-           translate([-23,-53.5,7.5-(5.5/2)-0.1])cube([2.5,20,5.7]); // Nut trap
+           translate([-23+xm,-53.5,7.5-(5.5/2)-0.1])cube([2.5,20,5.7]); // Nut trap
            translate([-32,-36.5-2.2,7.5-1.5])cube([40,4,3]);          // Screw hole
            
            // idler nut traps Top
-           translate([-23,-53.5,30-7.5-(5.5/2)-0.1])cube([2.5,20,5.7]); // Nut trap
+           translate([-23+xm,-53.5,30-7.5-(5.5/2)-0.1])cube([2.5,20,5.7]); // Nut trap
            translate([-32,-36.5-2.2,30-7.5-1.5])cube([40,4,3]);          // Screw hole
        }
    }
@@ -184,6 +227,17 @@ difference(){
     translate([33+4,12,22]) cube([4,4,20], center=true);  
      
     extruder_nozzle_cooling();
+    
+    // Marking    
+    translate([27,24,29.5]) rotate([180,180,0]) linear_extrude(height = 0.51) 
+    {
+        text(hobbType,font = "helvetica:style=Bold", size=6, center=true);
+        if (pindaDia > 8)
+        {
+            translate([-4,-10,0])
+            text(probe,font = "helvetica:style=Bold", size=6, center=true);
+        }
+    }
 
 }
 
@@ -212,9 +266,9 @@ difference(){
     union(){
     // Fins up
         //translate([0,37,0]) rotate([0,0,25]) cube([6,1.4,15]);
-        translate([0,32,15]) rotate([0,0,25]) cube([6,1.4,15]);
+        translate([0,32,15]) rotate([0,0,25]) cube([6-xm,1.4,15]);
         //translate([0,27,0]) rotate([0,0,25]) cube([6,1.4,15]);
-        translate([0,22,15]) rotate([0,0,25]) cube([6,1.4,15]);
+        translate([0,22,15]) rotate([0,0,25]) cube([6-xm,1.4,15]);
         //translate([0,17,0]) rotate([0,0,25]) cube([6,1.4,15]);
         
         // Structural support
@@ -366,13 +420,13 @@ translate([21,-21,0]){
      
      //Nozzle cutout
     // Top
-    translate([35/2,-0.001,15]) rotate([-90,0,0]) cylinder(r=8.13, h=3.7+0.5, $fn=120);
+    translate([35/2-xm,-0.001,15]) rotate([-90,0,0]) cylinder(r=8.13, h=3.7+0.5, $fn=120);
     // Groove
-    translate([35/2,0,15]) rotate([-90,0,0]) cylinder(r=6.13, h=20, $fn=120);
+    translate([35/2-xm,0,15]) rotate([-90,0,0]) cylinder(r=6.13, h=20, $fn=120);
     // Bottom
-    translate([35/2,9.8,15]) rotate([-90,0,0]) cylinder(r=8.13, h=3.7, $fn=120);
+    translate([35/2-xm,9.8,15]) rotate([-90,0,0]) cylinder(r=8.13, h=3.7, $fn=120);
     // Main body
-     translate([35/2,13,15]) rotate([-90,0,0]) cylinder(r=11.53, h=33.001, $fn=80);
+     translate([35/2-xm,13,15]) rotate([-90,0,0]) cylinder(r=11.53, h=33.001, $fn=80);
      
      }
      
@@ -397,8 +451,3 @@ module extruder_nozzle_cooling(){
     translate([35.001,40-24,30-3])rotate([0,-90,0])cylinder(r=1.35, h=8, $fn=20);
     
     }
-
-       extruder_body();
-       extruder_mount_holes();
-       extruder_cover();
-

@@ -90,7 +90,7 @@ pcb_clip();
 
 main_body();
 // reset button
-translate( [ 62.5 , 37.3 , 0 ] ) cylinder( h = 7.2, r = 3.5, $fn=30); 
+translate( [ 62.5 , 37.3 , 0 ] ) cylinder( h = 10.2, r = 3.5, $fn=30); 
 
 //left side
 translate( [ -77 , -14.7 , 0 ] ) cube( [ 1.5 , 70.7 , 26 ] );  
@@ -150,16 +150,16 @@ translate( [ 72.7 , 43.2 , 14 ] ) cylinder( h = 1, r1 = 1.4, r2=2, $fn=30);
 translate( [ -72.5 , 42.7 , 14 ] ) cylinder( h = 1, r = 1.4, r2=2, $fn=30); 
 
 
-// ORIGINAL PRUSA text
-translate([-67,52,0.6]) rotate([180,0,0]) linear_extrude(height = 2) 
-{ text("ORIGINAL",font = "helvetica:style=Bold", size=7, center=true); }
+// FabLab USTH text
+translate([-67,53,0.6]) rotate([180,0,0]) linear_extrude(height = 4) 
+{ text("FabLab",font = "helvetica:style=Bold", size=10, center=true); }
 
-translate([-18,52,0.6]) rotate([180,0,0]) linear_extrude(height = 2) 
-{ text("PRUSA",font = "helvetica:style=Bold", size=11, center=true); }
+translate([-18,53,0.6]) rotate([180,0,0]) linear_extrude(height = 3) 
+{ text("USTH",font = "helvetica:style=Bold", size=13, center=true); }
 
-translate( [ -66 , 41.5 , -0.4 ] )  cube( [ 45 , 1.6 , 1 ] );  
-translate( [ -66 , 42.3 , -0.4 ] ) cylinder( h = 1, r = 0.8, $fn=30);  
-translate( [ -21 , 42.3 , -0.4 ] ) cylinder( h = 1, r = 0.8, $fn=30);  
+translate( [ -66 , 40.5 , -0.4 ] )  cube( [ 45 , 1.6 , 1 ] );  
+translate( [ -66 , 41.3 , -0.4 ] ) cylinder( h = 1, r = 0.8, $fn=30);  
+translate( [ -21 , 41.3 , -0.4 ] ) cylinder( h = 1, r = 0.8, $fn=30);  
 
 // front cleanup
 translate( [ -100 , -64 , 0 ] ) cube( [ 200 , 50 , 50 ] ); 
